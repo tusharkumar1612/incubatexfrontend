@@ -6,6 +6,11 @@ import { useAuthStore } from '@/lib/store/auth.store';
 function StoreHydration() {
   useEffect(() => {
     useAuthStore.persist.rehydrate();
+    // After rehydrate, sync token to cookie so middleware can read it
+    const token = useAuthStore.getState().token;
+    if (token) {
+      document.cookie = `incubatex_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+    }
   }, []);
   return null;
 }

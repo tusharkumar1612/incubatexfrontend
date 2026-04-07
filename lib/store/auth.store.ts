@@ -24,10 +24,13 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       setAuth: (user, token) => {
         localStorage.setItem('incubatex_token', token);
+        // Mirror in cookie so middleware can read it (7-day expiry matches JWT)
+        document.cookie = `incubatex_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
         set({ user, token, isAuthenticated: true });
       },
       logout: () => {
         localStorage.removeItem('incubatex_token');
+        document.cookie = 'incubatex_token=; path=/; max-age=0';
         set({ user: null, token: null, isAuthenticated: false });
       },
     }),

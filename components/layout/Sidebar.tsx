@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
 import {
   LayoutDashboard, Building2, Users, Star, TrendingUp,
@@ -41,9 +41,15 @@ const navByRole: Record<string, Array<{ label: string; href: string; icon: React
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuthStore();
   const role = user?.role ?? 'founder';
   const navItems = navByRole[role] ?? navByRole.founder;
+
+  function handleLogout() {
+    logout();
+    router.push('/login');
+  }
 
   return (
     <aside className="w-60 bg-slate-900 flex flex-col h-screen sticky top-0">
@@ -86,7 +92,7 @@ export function Sidebar() {
           </div>
         </div>
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center gap-2 text-slate-400 hover:text-red-400 text-sm w-full transition-colors"
         >
           <LogOut size={14} />
